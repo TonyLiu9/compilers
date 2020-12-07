@@ -1,6 +1,8 @@
 %{
     #include"common.h"
     extern TreeNode * root;
+    Treenode* root;
+    extern int lineno;
     int yylex();
     int yyerror( char const * );
 %}
