@@ -144,3 +144,8 @@ type
     ;
 
 %%
+int yyerror(char const* message)
+{
+    cout<<message<<"at line "<<lineno<<endl;
+    return -1;
+}  
