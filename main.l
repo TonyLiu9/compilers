@@ -6,8 +6,7 @@
 
 INTEGER [0-9]+
 ID [[:alpha:]_][[:alpha:][:digit:]_]*
-
-EOL (\r\n|\n)
+EOL (\r\n|\n|\r)
 WHITE [\t ]
 %%
 
