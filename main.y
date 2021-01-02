@@ -1,8 +1,7 @@
 %{
     #include"common.h"
+    #include <bits/stdc++.h>
     extern TreeNode * root;
-    Treenode* root;
-    extern int lineno;
     int yylex();
     int yyerror( char const * );
 %}
@@ -144,8 +143,3 @@ type
     ;
 
 %%
-int yyerror(char const* message)
-{
-    cout<<message<<"at line "<<lineno<<endl;
-    return -1;
-}  

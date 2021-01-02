@@ -1,7 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
-#include<iostream>
-#include<string>
+#include<bits/stdc++.h>
 
 using std::cerr;
 using std::cout;
