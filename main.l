@@ -103,18 +103,15 @@ commentend "*/"
 %x COMMENT
 %%
 {return}	{std::cout<<std::setw(10)<<"RETURN"<<std::setw(10)<<"return"<<std::endl;}
-{lbrase}	{std::cout<<std::setw(10)<<"LBRASE"<<std::setw(10)<<"{"<<std::endl;}
-{rbrase}	{std::cout<<std::setw(10)<<"RBRASE"<<std::setw(10)<<"}"<<std::endl;}
-{lbracket}	{std::cout<<std::setw(10)<<"LBRACKET"<<std::setw(10)<<"["<<std::endl;}
-{rbracket}	{std::cout<<std::setw(10)<<"RBRACKET"<<std::setw(10)<<"]"<<std::endl;}
-{lparen}	{std::cout<<std::setw(10)<<"LPAREN"<<std::setw(10)<<"("<<std::endl;ckmc++;}
-{rparen}	{std::cout<<std::setw(10)<<"RPAREN"<<std::setw(10)<<")"<<std::endl;ckmc++;
-if(ckmc==4){
-std::cout<<"in fanction/main last id"<<std::endl;}
-}
-{eq}	{std::cout<<std::setw(10)<<"EQ"<<std::setw(10)<<"=="<<std::endl;}
-{smaller}	{std::cout<<std::setw(10)<<"SMT"<<std::setw(10)<<"<"<<std::endl;}
-{bigger}	{std::cout<<std::setw(10)<<"BIGT"<<std::setw(10)<<">"<<std::endl;}
+{lbrase}	{return LBRASE}
+{rbrase}	{return RBRASE}
+{lbracket}	{return LBRACKET}
+{rbracket}	{return RBRACKET}
+{lparen}	{return LPAREN;ckmc++;}
+{rparen}	{return RPAREN;ckmc++;}
+{eq}	{return EQUAL;}
+{smaller}	{return SMT;}
+{bigger}	{return BIGT;}
 {number}	{
 		 numbers++;chars+=strlen(yytext);
 		 std::cout<<std::setw(10)<<"NUMBER"<<std::setw(10)<<yytext<<std::setw(10)<<yytext<<std::endl;
@@ -131,55 +128,29 @@ std::cout<<"in fanction/main last id"<<std::endl;}
 		 todo=0;*/
 		}
 {assign}	{std::cout<<std::setw(10)<<"ASSIGN"<<std::setw(10)<<"="<<std::endl;}
-{while}	{std::cout<<std::setw(10)<<"WHILE"<<std::setw(10)<<"while"<<std::endl;}
+{while}	{return WHILE;}
 {semicolon}	{std::cout<<std::setw(10)<<"SEMICOLON"<<std::setw(10)<<";"<<std::endl;ckmc=5;}
-{int}	{std::cout<<std::setw(10)<<"INT"<<std::setw(10)<<"int"<<std::endl;ckmc=1;}
-{if}	{std::cout<<std::setw(10)<<"IF"<<std::setw(10)<<"if"<<std::endl;}
+{int}	{ckmc=1;return INT;}
+{if}	{return IF;}
 {commentbegin} {BEGIN COMMENT;}
 {cb} {}
 <COMMENT>{commentelement}	{}
 <COMMENT>{commentend}	{BEGIN INITIAL;}
 {line}	{lines++;}
-{div}	{std::cout<<std::setw(10)<<"DIV"<<std::setw(10)<<"/"<<std::endl;todo=4;}
-{sub}	{std::cout<<std::setw(10)<<"SUB"<<std::setw(10)<<"*"<<std::endl;todo=3;}
-{minus}	{std::cout<<std::setw(10)<<"MINUS"<<std::setw(10)<<"-"<<std::endl;todo=2;}
-{add}	{std::cout<<std::setw(10)<<"ADD"<<std::setw(10)<<"+"<<std::endl;todo=1;}
-
+{div}	{return DIV;todo=4;}
+{sub}	{return SUB;todo=3;}
+{minus}	{return MINUS;todo=2;}
+{add}	{return ADD;todo=1;}
+"+=" return ADDASS;
+"-=" return MINASS;
+"/=" return DIVASS;
+"*=" return SUBASS;
+"%=" return MODASS;
+"%" return MOD;
+"!" return NOT;
+"," return COMMA;
 {word}	{ words++;
-/*if(ckmc==0)
-	 ckm=yytext;*/
-	 /*ckmc++;
-	chars+=strlen(yytext);
-	 strncpy(strings,yytext,10);
-	 strings[10]='/0';
-	 count=0;
-	 for(;count<i;count++)
-	 {
-		strncpy(scc[count],strings,10);
-	 	scc[count][10]='/0';
-	 	/*std::cout<<"try"<<std::endl;*/
-	 	/*for(int ac=0;ac<10;ac++)
-	 	{
-	 	if(sc[count][ac]!=scc[count][ac])
-	 	{jdgp++;}
-		if(jdgp==0)
-	 	{	std::cout<<std::setw(10)<<"ID"<<std::setw(10)<<yytext<<std::setw(10)<<count<<std::endl;
-	 	goto L;
-	 	}
-	 	}
-	 }
-	G: if(count==i)
-	 {
-	 /*std::cout<<"addmore"<<std::endl;*/
-	 /*strncpy(sc[i],strings,10);
-	 sc[i][10]='/0';
-	 std::cout<<std::setw(10)<<"ID"<<std::setw(10)<<yytext<<std::setw(10)<<i<<std::endl;
-
-	 i++;
-	 }
-	 L:;//sleep
-	 */
-	 std::cout<<std::setw(10)<<"ID"<< std::setw(10)<<yytext<<std:: setw(10)<<symj(yytext,yyleng)<<std::endl;
+	std::cout<<std::setw(10)<<"ID"<< std::setw(10)<<yytext<<std:: setw(10)<<symj(yytext,yyleng)<<std::endl;
 	}
 {char}	{chars++;}
 %%
