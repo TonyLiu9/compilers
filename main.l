@@ -1,5 +1,7 @@
 %option noyywrap
 %top{
+#include<common.h>
+#include "main.tab.hh"
 #include<fstream>
 #include<map>
 #include<iomanip>
@@ -47,6 +49,22 @@ else
 		goto sJ;
 	}
 }
+
+    
+    int otoi(string s)
+    {
+        int ans=0;
+        for(int i=1;i<s.size();i++)
+            ans=ans*8+s[i]-'0';
+        return ans;
+    }
+    int htoi(string s)
+    {
+        int ans=0;
+        for(int i=1;i<s.size();i++)
+            ans=ans*16+s[i]-'0';
+        return ans;
+    }
 }
 %}
 
@@ -66,7 +84,12 @@ semicolon	;
 eq	==
 assign	=
 number	[1-9][0-9]*|[0]
+number8 [0][1-9][0-9]+|[00]
+number16 [0x][1-9][0-9]*|[0x0]
 word	[a-zA-Z]+
+
+CHARACTER \'(.*)\'
+STRING \"(.*)\"
 add	"+"
 minus	"-"
 sub	"*"
