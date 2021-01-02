@@ -86,8 +86,9 @@ assign	=
 number	[1-9][0-9]*|[0]
 number8 [0][1-9][0-9]+|[00]
 number16 [0x][1-9][0-9]*|[0x0]
-word	[a-zA-Z]+
-
+word	[a-zA-Z][0-9a-zA-Z]*
+addword [\&][a-zA-Z][0-9a-zA-Z]*
+ptrofword	[\*][a-zA-Z][0-9a-zA-Z]*
 CHARACTER \'(.*)\'
 STRING \"(.*)\"
 add	"+"
@@ -95,18 +96,18 @@ minus	"-"
 sub	"*"
 div	"/"
 line	\n
-char	.
 cb "//".*\n
 commentbegin "/*" 
 commentelement .|\n
 commentend "*/" 
+char	.
 %x COMMENT
 %%
-{return}	{std::cout<<std::setw(10)<<"RETURN"<<std::setw(10)<<"return"<<std::endl;}
-{lbrase}	{return LBRASE}
-{rbrase}	{return RBRASE}
-{lbracket}	{return LBRACKET}
-{rbracket}	{return RBRACKET}
+{return}	{return RETURN;}
+{lbrase}	{return LBRASE;}
+{rbrase}	{return RBRASE;}
+{lbracket}	{return LBRACKET;}
+{rbracket}	{return RBRACKET;}
 {lparen}	{return LPAREN;ckmc++;}
 {rparen}	{return RPAREN;ckmc++;}
 {eq}	{return EQUAL;}
@@ -114,7 +115,11 @@ commentend "*/"
 {bigger}	{return BIGT;}
 {number}	{
 		 numbers++;chars+=strlen(yytext);
-		 std::cout<<std::setw(10)<<"NUMBER"<<std::setw(10)<<yytext<<std::setw(10)<<yytext<<std::endl;
+
+    TreeNode *node = new TreeNode(NODE_CONINT);
+    node->int_val = atoi(yytext);
+    yylval = node;
+		 return NUMBER;
 		 /*if(todo==0)
 		mem=int(*yytext)-48;
 		 else if(todo==1)
@@ -127,10 +132,48 @@ commentend "*/"
 		 mem=mem/(int(*yytext)-48);
 		 todo=0;*/
 		}
-{assign}	{std::cout<<std::setw(10)<<"ASSIGN"<<std::setw(10)<<"="<<std::endl;}
+		{number8}{
+TreeNode *node = new TreeNode(NODE_CONINT);
+    node->int_val = otoi(yytext);
+    yylval = node;
+		 return NUMBER;
+		}
+		{number16}{
+
+    TreeNode *node = new TreeNode(NODE_CONINT);
+    node->int_val = htoi(yytext);
+    yylval = node;
+    	
+		 return NUMBER;
+		}
+		{CHARACTER} {
+    TreeNode *node = new TreeNode(NODE_CONCHAR);
+    node->int_val = int(string(yytext)[1]);
+    yylval = node;
+    return CHARACTER;
+}
+{STRING} {
+    TreeNode *node = new TreeNode(NODE_CONSTR);
+    string str = string(yytext);
+    str.erase(0,str.find_first_not_of("\""));
+    str.erase(str.find_last_not_of("\"") + 1);
+    node->str_val = str;
+    yylval = node;
+    return STRING;
+}
+{assign}	{return ASSIGN;}
 {while}	{return WHILE;}
-{semicolon}	{std::cout<<std::setw(10)<<"SEMICOLON"<<std::setw(10)<<";"<<std::endl;ckmc=5;}
+{semicolon}	{return SEMICOLON;ckmc=5;}
 {int}	{ckmc=1;return INT;}
+"void"	{ckmc=1;return VOID;}
+"struct"{return STRUCT;}
+
+"printf" return PRINTF;
+"scanf" return SCANF;
+
+"const" return CONST;
+
+"." return dot;
 {if}	{return IF;}
 {commentbegin} {BEGIN COMMENT;}
 {cb} {}
@@ -141,16 +184,39 @@ commentend "*/"
 {sub}	{return SUB;todo=3;}
 {minus}	{return MINUS;todo=2;}
 {add}	{return ADD;todo=1;}
+"++" return SELFADD;
+"--" return SELFMIN;
 "+=" return ADDASS;
 "-=" return MINASS;
 "/=" return DIVASS;
 "*=" return SUBASS;
 "%=" return MODASS;
+"!=" return NEQUAL;
 "%" return MOD;
 "!" return NOT;
+"&&" return AND;
+"||" return OR;
 "," return COMMA;
 {word}	{ words++;
-	std::cout<<std::setw(10)<<"ID"<< std::setw(10)<<yytext<<std:: setw(10)<<symj(yytext,yyleng)<<std::endl;
-	}
+    TreeNode *node = new TreeNode(NODE_VAR);
+    node->varName = string(yytext);
+    yylval = node;
+    return WORD;}
+    {addword}	{ words++;
+    TreeNode *node = new TreeNode(NODE_VAR);
+    string str = string(yytext);
+    str.erase(str.begin());
+    node->varName = str;
+    node->varFlag = VAR_ADDRESS;
+    yylval = node;
+    return WORD;}
+    {ptrofword}	{ words++;
+    TreeNode *node = new TreeNode(NODE_VAR);
+    string str = string(yytext);
+    str.erase(str.begin());
+    node->varName = str;
+    node->varFlag = VAR_POINTER;
+    yylval = node;
+    return WORD;}
 {char}	{chars++;}
 %%
