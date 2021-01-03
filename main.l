@@ -113,6 +113,8 @@ char	.
 {eq}	{return EQUAL;}
 {smaller}	{return SMT;}
 {bigger}	{return BIGT;}
+">=" return BTOE;
+"<=" return STOE;
 {number}	{
 		 numbers++;chars+=strlen(yytext);
 
