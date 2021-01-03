@@ -169,7 +169,7 @@ TreeNode *node = new TreeNode(NODE_CONINT);
 {int}	{ckmc=1;return INT;}
 "void"	{ckmc=1;return VOID;}
 "struct"{return STRUCT;}
-
+"else" return ELSE;
 "printf" return PRINTF;
 "scanf" return SCANF;
 
