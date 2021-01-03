@@ -173,7 +173,7 @@ TreeNode *node = new TreeNode(NODE_CONINT);
 
 "const" return CONST;
 
-"." return dot;
+"." return DOT;
 {if}	{return IF;}
 {commentbegin} {BEGIN COMMENT;}
 {cb} {}

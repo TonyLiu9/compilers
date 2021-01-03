@@ -10,7 +10,7 @@
 
 %start program
 
-%token ID IDadd IDptr INTEGER CHARACTER STRING
+%token WORD NUMBER CHARACTER STRING
 %token IF ELSE WHILE FOR STRUCT
 %token CONST
 %token INT VOID CHAR 
@@ -20,7 +20,7 @@
 %token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
 %token EQUAL NEQUAL BT BE LT LE NOT AND OR
 %token PRINTF SCANF
-%token dot
+%token DOT
 
 %right NEG
 %right OR
