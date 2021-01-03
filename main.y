@@ -1,5 +1,6 @@
 %{
     #include"common.h"
+    extern TreeNode * root;
     #include <bits/stdc++.h>
     extern TreeNode * root;
     int yylex();
@@ -9,18 +10,27 @@
 
 %start program
 
-%token ID INTEGER
-%token IF ELSE WHILE
-%token INT VOID
-%token LPAREN RPAREN LBRACE RBRACE SEMICOLON
+%token ID IDadd IDptr INTEGER CHARACTER STRING
+%token IF ELSE WHILE FOR STRUCT
+%token CONST
+%token INT VOID CHAR 
+%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE COMMA SEMICOLON
 %token TRUE FALSE
-%token ADD ASSIGN EQUAL NOT
+%token ADD MINUS MULTI DIV MOD SELFADD SELFMIN NEG
+%token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%token EQUAL NEQUAL BT BE LT LE NOT AND OR
 %token PRINTF SCANF
+%token dot
 
+%right NEG
+%right OR
+%right AND
+%left EQUAL NEQUAL BT BE LT LE
+%left ADD MINUS
+%left MULTI DIV MOD
 %right NOT
-%left ADD
-%left EQUAL
-%right ASSIGN
+%right SELFADD SELFMIN 
+%right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
 %%
@@ -35,7 +45,12 @@ statement
     : instruction {$$=$1;}
     | if_else {$$=$1;}
     | while {$$=$1;}
+    | for {$$=$1;}
     | LBRACE statements RBRACE {$$=$2;}
+    | def_func {$$=$1;}
+    | printf SEMICOLON {$$=$1;}
+    | scanf SEMICOLON {$$=$1;}
+    | struct_def {$$=$1;}
     ;
 if_else
     : IF bool_statment statement %prec LOWER_THEN_ELSE {
