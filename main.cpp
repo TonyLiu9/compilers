@@ -1,8 +1,7 @@
-#include"main.tab.hh"
-#include"common.h"
-#include<iostream>
-using std::cout;
-using std::endl;
+#include "main.tab.hh"
+#include "common.h"
+#include <bits/stdc++.h>
+using namespace std;
 TreeNode *root=nullptr;
 int main ()
 {

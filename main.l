@@ -2,8 +2,10 @@
 %top{
 #include<common.h>
 #include "main.tab.hh"
+#include "tree.h"
 #include<fstream>
 #include<map>
+
 #include<iomanip>
 #include<stdio.h>
 #include<string.h>
@@ -16,10 +18,7 @@ using namespace std;
 int chars=0,words=0,lines=0,numbers=0,mem=0,todo=0,count=0,i=0,jdgf=0,jdgb=0,jdgp=0,ckmc=0,csymj=0;
 char *remf,*sye[100],*ckm;
 char strings[100],sc[100][100],scc[100][100];
-struct msym{
-    int snum;
-    char*  sym;
-};
+
 msym b[256];
 void initm(msym* a)
 {
@@ -53,20 +52,7 @@ else
  
 }
    
-    int otoi(string s)
-    {
-        int ans=0;
-        for(int i=1;i<s.size();i++)
-            ans=ans*8+s[i]-'0';
-        return ans;
-    }
-    int htoi(string s)
-    {
-        int ans=0;
-        for(int i=1;i<s.size();i++)
-            ans=ans*16+s[i]-'0';
-        return ans;
-    }
+   
 %}
 
 while   while
@@ -85,8 +71,6 @@ semicolon   ;
 eq  ==
 assign  =
 number  [1-9][0-9]*|[0]
-number8 [0][1-9][0-9]+|[00]
-number16 [0x][1-9][0-9]*|[0x0]
 word    [a-zA-Z][0-9a-zA-Z]*
 addword [\&][a-zA-Z][0-9a-zA-Z]*
 ptrofword   [\*][a-zA-Z][0-9a-zA-Z]*
@@ -135,21 +119,8 @@ char    .
          mem=mem/(int(*yytext)-48);
          todo=0;*/
         }
-        {number8}{
-TreeNode *node = new TreeNode(NODE_CONINT);
-    node->int_val = otoi(yytext);
-    yylval = node;
-         return NUMBER;
-        }
-        {number16}{
 
-    TreeNode *node = new TreeNode(NODE_CONINT);
-    node->int_val = htoi(yytext);
-    yylval = node;
-        
-         return NUMBER;
-        }
-        {CHARACTER} {
+{CHARACTER} {
     TreeNode *node = new TreeNode(NODE_CONCHAR);
     node->int_val = int(string(yytext)[1]);
     yylval = node;

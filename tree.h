@@ -5,19 +5,26 @@
 
 using namespace std;
 enum NodeType{
-    NODE_CONST,
-    NODE_BOOL,
-    NODE_VAR,
-    NODE_EXPR,
-    NODE_TYPE,
-    NODE_STMT,
     NODE_PROG,
-    NODE_OP
+    NODE_STMT,
+    NODE_OP,
+    NODE_TYPE,
+    NODE_BOOL,
+    NODE_CONINT,
+    NODE_CONCHAR,
+    NODE_CONSTR,
+    NODE_FEXPR,
+    NODE_WEXPR,
+    NODE_VAR,
+    NODE_FUNC,
+    NODE_ASSIGN,
+    NODE_STRDEF
 };
 
 enum StmtType{
     STMT_IF,
     STMT_WHILE,
+    STMT_FOR,
     STMT_DECL,
     STMT_ASSIGN,
     STMT_PRINTF,
@@ -25,16 +32,23 @@ enum StmtType{
 };
 
 enum OpType{
-    OP_EQUAL,
-    OP_NOT,
-    OP_ADD,
+    OP_ADD, OP_MINUS, OP_MULTI, OP_DIV, OP_MOD,
+    OP_SADD, OP_SMIN, OP_NEG, OP_POS,
+    OP_NOT, OP_AND, OP_OR,
+    OP_EQ, OP_LT, OP_LE, OP_GT, OP_GE, OP_NE
 };
 
 enum VarType{
+    VAR_VOID,
+    VAR_BOOLEAN,
     VAR_INTEGER,
-    VAR_VOID
+    VAR_CHAR,
+    VAR_STR
 };
-
+struct msym{
+    int snum;
+    char*  sym;
+};
 struct TreeNode {
     int nodeID;
     NodeType nodeType;
@@ -64,5 +78,7 @@ struct TreeNode {
     string var_name;
 
     TreeNode(NodeType type);
+
+};
 };
 #endif
