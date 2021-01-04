@@ -1,7 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
-#include<iostream>
-#include<string>
+#include <bits/stdc++.h>
 
 using namespace std;
 enum NodeType{
@@ -50,6 +49,7 @@ struct msym{
     char*  sym;
 };
 struct TreeNode {
+    TreeNode(int NodeType);
     int nodeID;
     NodeType nodeType;
 
@@ -72,6 +72,7 @@ struct TreeNode {
 
     int int_val;
     bool bool_val;
+    string str_val;
     StmtType stmtType;
     OpType opType;
     VarType varType;

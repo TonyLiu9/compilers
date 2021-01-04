@@ -1,5 +1,6 @@
 %{
     #include"common.h"
+    #include <bits/stdc++.h>
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
@@ -8,18 +9,27 @@
 
 %start program
 
-%token ID INTEGER
-%token IF ELSE WHILE
-%token INT VOID
-%token LPAREN RPAREN LBRACE RBRACE SEMICOLON
+%token WORD NUMBER CHARACTER STRING
+%token IF ELSE WHILE FOR STRUCT
+%token CONST
+%token INT VOID CHAR 
+%token LPAREN RPAREN LBRASE RBRASE LBRACKET RBRACKET COMMA SEMICOLON
 %token TRUE FALSE
-%token ADD ASSIGN EQUAL NOT
+%token ADD MINUS MULTI DIV MOD SELFADD SELFMIN NEG
+%token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%token EQUAL NEQUAL BIGT SMT BGOE STOE NOT AND OR
 %token PRINTF SCANF
+%token DOT RETURN
 
+%right NEG
+%right OR
+%right AND
+%left EQUAL NEQUAL BT BE LT LE
+%left ADD MINUS
+%left MULTI DIV MOD
 %right NOT
-%left ADD
-%left EQUAL
-%right ASSIGN
+%right SELFADD SELFMIN 
+%right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
 %%
