@@ -98,6 +98,9 @@ public:
     string var_name;
     int varFlag;
     TreeNode(NodeType type);
+private:
+    vector<TreeNode *> CHILDREN;
+    vector<TreeNode *> SIBLING;
 
 };
 #endif
