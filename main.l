@@ -159,11 +159,11 @@ char    .
 {add}   {return ADD;todo=1;}
 "++" return SELFADD;
 "--" return SELFMIN;
-"+=" return ADDASS;
-"-=" return MINASS;
-"/=" return DIVASS;
-"*=" return SUBASS;
-"%=" return MODASS;
+"+=" return ADDEQ;
+"-=" return MINEQ;
+"/=" return DIVEQ;
+"*=" return SUBEQ;
+"%=" return MODEQ;
 "!=" return NEQUAL;
 "%" return MOD;
 "!" return NOT;
