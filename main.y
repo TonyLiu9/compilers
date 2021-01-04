@@ -3,7 +3,6 @@
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
-    extern int lid;
     extern vector struct_def  strdef;
     bool forflag;
     vector<tempvariate> tmpfor;
@@ -47,8 +46,14 @@ statements
 statement
     : instruction {$$=$1;}
     | if_else {$$=$1;}
+    | printf SEMICOLON {$$=$1;}
+    | scanf SEMICOLON {$$=$1;}
+    | d_struct {$$=$1;}
     | while {$$=$1;}
+    | for{$$=$1;}
+    | d_func{$$=$1;}
     | LBRACE statements RBRACE {$$=$2;}
+    | LBRACKET statements RBRACKET {$$=$2;}
     ;
 if_else
     : IF bool_statment statement %prec LOWER_THEN_ELSE {
