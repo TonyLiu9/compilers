@@ -3,11 +3,7 @@
 #include<iostream>
 #include<string>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::string;
-
+using namespace std;
 enum NodeType{
     NODE_CONST,
     NODE_BOOL,
