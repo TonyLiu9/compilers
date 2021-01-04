@@ -1,9 +1,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include "tree.h"
 #include <bits/stdc++.h>
 #include "defstruct.h"
+#include "variatetable.h"
 #define YYSTYPE TreeNode *
 
 #endif

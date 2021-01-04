@@ -3,7 +3,7 @@
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
-    extern vector struct_def  strdef;
+    extern vector d_struct  strdef;
     bool forflag;
     vector<tempvariate> tmpfor;
     int forlevel = 0;
@@ -12,10 +12,10 @@
 
 %start program
 %token RETURN
-%token WORD NUMBER CHARACTER STRING
+%token WORD NUMBER CHARACTER STRING WORDARR WORDPTR
 %token IF ELSE WHILE FOR STRUCT
 %token CONST
-%token INT VOID CHAR 
+%token INT VOWORD CHAR 
 %token LPAREN RPAREN LBRASE RBRASE LBRACKET RBRACKET COMMA SEMICOLON
 %token TRUE FALSE
 %token ADD MINUS SUB DIV MOD SELFADD SELFMIN
@@ -46,14 +46,121 @@ statements
 statement
     : instruction {$$=$1;}
     | if_else {$$=$1;}
+    | while {$$=$1;}
+    | for {$$=$1;}
+    | LBRACE statements RBRACE {$$=$2;}
+    | def_func {$$=$1;}
     | printf SEMICOLON {$$=$1;}
     | scanf SEMICOLON {$$=$1;}
     | d_struct {$$=$1;}
-    | while {$$=$1;}
-    | for{$$=$1;}
-    | d_func{$$=$1;}
-    | LBRACE statements RBRACE {$$=$2;}
-    | LBRACKET statements RBRACKET {$$=$2;}
+    ;
+d_struct
+    : STRUCT WORD LBRACE struct_ins RBRACE args SEMICOLON
+    {
+        TreeNode* node = new TreeNode(NODE_STRDEF);
+        node->addChild($2);
+        node->addChild($4);
+        int cnum = node->childNum();
+        node->addChild($6);
+        $$=node;
+    }
+    | STRUCT WORD LBRACE struct_ins RBRACE SEMICOLON
+    {
+        TreeNode* node = new TreeNode(NODE_STRDEF);
+        node->addChild($2);
+        node->addChild($4);
+        $$=node;
+    }
+    ;
+struct_ins
+    : instruction {$$=$1;}
+    | struct_ins instruction {$$=$1;$$->addSibling($2);}
+    ;
+ass
+    : WORDS ASSIGN expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS ADDASS expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_ADD;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS MINASS expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_MINUS;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS MULASS expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_MULTI;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS DIVASS expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_DIV;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS MODASS expr{
+        TreeNode* node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_MOD;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | WORDS SELFADD {
+        TreeNode *node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_SADD;
+        node->addChild($1);
+        $$=node; 
+    }
+    | WORDS SELFMIN {
+        TreeNode *node=new TreeNode(NODE_ASSIGN);
+        node->opType=OP_SMIN;
+        node->addChild($1);
+        $$=node; 
+    }
+    ;
+args
+    : WORDS {$$=$1;}
+    | ass {$$=$1;}
+    | args COMMA WORDS {$$=$1; $$->addSibling($3);}
+    | args COMMA ass {$$=$1; $$->addSibling($3);}
+    ;
+call_args
+    : WORDS {$$=$1;}
+    | WORDadd {$$=$1;}
+    | WORDptr {$$=$1;}
+    | call_args COMMA WORDS {$$=$1; $$->addSibling($3);}
+    | call_args COMMA WORDadd {$$=$1; $$->addSibling($3);}
+    | call_args COMMA WORDptr {$$=$1; $$->addSibling($3);}
+    ;
+def_func
+    : type WORD LPAREN call_args RPAREN statement {
+        TreeNode *node=new TreeNode(NODE_FUNC);
+        node->addChild($1);
+        node->addChild($2);
+        node->addChild($4);
+        node->addChild($6);
+        $$=node;
+    }
+    | type WORD LPAREN RPAREN statement {
+        TreeNode *node=new TreeNode(NODE_FUNC);
+        node->addChild($1);
+        node->addChild($2);
+        node->addChild($5);
+        $$=node;
+    }
     ;
 if_else
     : IF bool_statment statement %prec LOWER_THEN_ELSE {
@@ -81,30 +188,98 @@ while
         $$=node;
     }
     ;
+for
+    : FORE for_expr statement{
+        TreeNode *node=new TreeNode(NODE_STMT);
+        node->stmtType=STMT_FOR;
+        node->addChild($2);
+        node->addChild($3);
+        $$=node;
+        while(tmpfor[tmpfor.size()-1].l == forlevel)
+        {
+            tmpfor.pop_back();
+        }
+        forlevel--;
+    }
+    ;
+FORE
+    : FOR
+    {
+        $$=$1;
+        forflag = 1;
+    }
+for_expr
+    : LPAREN instruction bool_expr SEMICOLON ass RPAREN{
+        TreeNode *node=new TreeNode(NODE_FEXPR);
+        node->addChild($2);
+        node->addChild($3);
+        node->addChild($5);
+        $$=node;
+        forlevel++;
+    }
 bool_statment
     : LPAREN bool_expr RPAREN {$$=$2;}
     ;
 instruction
-    : type ID ASSIGN expr SEMICOLON {
+    : type args SEMICOLON {
         TreeNode *node=new TreeNode(NODE_STMT);
         node->stmtType=STMT_DECL;
         node->addChild($1);
         node->addChild($2);
-        node->addChild($4);
         $$=node;
+        int preflag = 0;
+        vector<variate> l;
+        for(int i = 1;i < node->childNum();i++)
+        {
+            TreeNode* cld = node->getChild(i);
+            if(!preflag)
+            {
+                if(forflag) tmpfor.push_back(tmpvariate(variate($1->varType, cld->nodeType==NODE_ASSIGN?cld->getChild(0)->varName:cld->varName), forlevel));
+            }
+            preflag = 0;
+        }
+        forflag = 0;
     }
-    | ID ASSIGN expr SEMICOLON {
+    | args SEMICOLON {
         TreeNode *node=new TreeNode(NODE_STMT);
         node->stmtType=STMT_ASSIGN;
         node->addChild($1);
-        node->addChild($3);
         $$=node;  
     }
-    | printf SEMICOLON {$$=$1;}
-    | scanf SEMICOLON {$$=$1;}
+    | CONST type args SEMICOLON {
+        TreeNode *node=new TreeNode(NODE_STMT);
+        node->stmtType=STMT_DECL;
+        node->addChild($2);
+        node->addChild($3);
+        $$=node;
+        int preflag = 0;
+        for(int i = 1;i < node->childNum();i++)
+        {
+            TreeNode* cld = node->getChild(i);
+            if(!preflag)
+            {
+                if(forflag) tmpfor.push_back(tmpvariate(variate($1->varType, cld->nodeType==NODE_ASSIGN?cld->getChild(0)->varName:cld->varName), forlevel));
+            }
+            preflag = 0;
+        }
+        forflag = 0;
+    }
     ;
 printf
-    : PRINTF LPAREN expr RPAREN {
+    : PRINTF LPAREN STRING COMMA call_args RPAREN {
+        TreeNode *node=new TreeNode(NODE_STMT);
+        node->stmtType=STMT_PRINTF;
+        node->addChild($3);
+        node->addChild($5);
+        $$=node;
+    }
+    | PRINTF LPAREN STRING RPAREN{
+        TreeNode *node=new TreeNode(NODE_STMT);
+        node->stmtType=STMT_PRINTF;
+        node->addChild($3);
+        $$=node;
+    }
+    | PRINTF LPAREN WORD RPAREN{                      
         TreeNode *node=new TreeNode(NODE_STMT);
         node->stmtType=STMT_PRINTF;
         node->addChild($3);
@@ -112,10 +287,11 @@ printf
     }
     ;
 scanf
-    : SCANF LPAREN expr RPAREN {
+    : SCANF LPAREN STRING COMMA call_args RPAREN {
         TreeNode *node=new TreeNode(NODE_STMT);
         node->stmtType=STMT_SCANF;
         node->addChild($3);
+        node->addChild($5);
         $$=node;
     }
     ;
@@ -124,7 +300,56 @@ bool_expr
     | FALSE {$$=$1;}
     | expr EQUAL expr {
         TreeNode *node=new TreeNode(NODE_OP);
-        node->opType=OP_EQUAL;
+        node->opType=OP_EQ;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | expr NEQUAL expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_NE;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | expr BIGT expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_BT;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | expr BTOE expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_BE;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | expr SMT expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_LT;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | expr STOE expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_LE;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | bool_expr AND bool_expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_AND;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+    }
+    | bool_expr OR bool_expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_OR;
         node->addChild($1);
         node->addChild($3);
         $$=node;
@@ -137,14 +362,50 @@ bool_expr
     }
     ;
 expr
-    : ID {$$=$1;}
+    : WORDS {$$=$1;}
     | INTEGER {$$=$1;}
+    | CHARACTER {$$=$1;}
+    | STRING {$$=$1;}
     | expr ADD expr {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_ADD;
         node->addChild($1);
         node->addChild($3);
         $$=node;   
+    }
+    | expr MINUS expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_MINUS;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;   
+    }
+    | expr MULTI expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_MULTI;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;   
+    }
+    | expr DIV expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_DIV;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;   
+    }
+    | expr MOD expr {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_MOD;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;   
+    }
+    | MINUS expr %prec NEG {
+        TreeNode *node=new TreeNode(NODE_OP);
+        node->opType=OP_NEG;
+        node->addChild($2);
+        $$=node; 
     }
     ;
 type
@@ -153,11 +414,55 @@ type
         node->varType=VAR_INTEGER;
         $$=node; 
     }
-    | VOID {
+    | VOWORD {
         TreeNode *node=new TreeNode(NODE_TYPE);
-        node->varType=VAR_VOID;
+        node->varType=VAR_VOWORD;
         $$=node;         
     }
+    | CHAR {
+        TreeNode *node=new TreeNode(NODE_TYPE);
+        node->varType=VAR_CHAR;
+        $$=node;
+    }
     ;
-
+WORDARR
+    : WORD LBRACK expr RBRACK {
+        $$=$1;
+        $$->dim.push_back($3);
+    }
+    | WORDARR LBRACK expr RBRACK {
+        $$=$1;
+        $$->dim.push_back($3);
+    }
+    ;
+WORDcld
+    : WORD dot WORD {
+        $$=$1;
+        $$->addChild($3);
+    }
+    | WORDARR dot WORD {
+        $$=$1;
+        $$->addChild($3);
+    }
+    | WORD dot WORDARR {
+        $$=$1;
+        $$->addChild($3);
+    }
+    | WORDARR dot WORDARR {
+        $$=$1;
+        $$->addChild($3);
+    }
+    | WORDcld dot WORD {
+        $$=$1;
+        $$->addChild($3);
+    }
+    | WORDcld dot WORDARR {
+        $$=$1;
+        $$->addChild($3);
+    }
+    ;
+WORDS 
+    : WORD {$$=$1;}
+    | WORDARR {$$=$1;}
+    | WORDcld {$$=$1;}
 %%

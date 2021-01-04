@@ -104,47 +104,5 @@ private:
 
 };
 
-class variate
-{
-public:
-    int type;
-    string name;
-    int int_val;
-    string str_val;
-    variate()
-    {
-        this->type = 0;
-        this->name = "";
-    }
-    variate(int type, string name)
-    {
-        this->type = type;
-        this->name = name;
-    }
-};
-class tempvariate
-{
-public:
-    variate v;
-    int l;
-    tempvariate(variate v, int l)
-    {
-        this->v = variate(v.type, v.name);
-        this->l = l;
-    }
-};
 
-class struct_def
-{
-public:
-    string name;
-    vector<variate> var;
-    int struct_index;
-    struct_def(string name, vector<variate> var)
-    {
-        this->name = name;
-        this->var = var;
-    }
-};
-static int struct_num = 4;
 #endif

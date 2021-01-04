@@ -175,7 +175,7 @@ char    .
     node->varName = string(yytext);
     yylval = node;
     return WORD;}
-    {addword}   { words++;
+{addword}   { words++;
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
@@ -183,7 +183,7 @@ char    .
     node->varFlag = VAR_ADDRESS;
     yylval = node;
     return WORD;}
-    {ptrofword} { words++;
+{ptrofword} { words++;
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
