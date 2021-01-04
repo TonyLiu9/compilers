@@ -1,12 +1,9 @@
 #include"main.tab.hh"
 #include"common.h"
-#include<bits/stdc++.h>
+#include<iostream>
 using std::cout;
 using std::endl;
-using namespace std;
 TreeNode *root=nullptr;
-vector<struct_def> strdef;
-int lid=0;
 int main ()
 {
     yyparse();

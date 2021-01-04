@@ -1,8 +1,6 @@
 %{
     #include"common.h"
     extern TreeNode * root;
-    #include <bits/stdc++.h>
-    extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
 %}
@@ -10,27 +8,18 @@
 
 %start program
 
-%token WORD NUMBER CHARACTER STRING
-%token IF ELSE WHILE FOR STRUCT
-%token CONST
-%token INT VOID CHAR 
-%token LPAREN RPAREN LBRASE RBRASE LBRACKET RBRACKET COMMA SEMICOLON
+%token ID INTEGER
+%token IF ELSE WHILE
+%token INT VOID
+%token LPAREN RPAREN LBRACE RBRACE SEMICOLON
 %token TRUE FALSE
-%token ADD MINUS MULTI DIV MOD SELFADD SELFMIN NEG
-%token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
-%token EQUAL NEQUAL BIGT SMT BGOE STOE NOT AND OR
+%token ADD ASSIGN EQUAL NOT
 %token PRINTF SCANF
-%token DOT RETURN
 
-%right NEG
-%right OR
-%right AND
-%left EQUAL NEQUAL BT BE LT LE
-%left ADD MINUS
-%left MULTI DIV MOD
 %right NOT
-%right SELFADD SELFMIN 
-%right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%left ADD
+%left EQUAL
+%right ASSIGN
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
 %%
@@ -45,12 +34,7 @@ statement
     : instruction {$$=$1;}
     | if_else {$$=$1;}
     | while {$$=$1;}
-    | for {$$=$1;}
     | LBRACE statements RBRACE {$$=$2;}
-    | def_func {$$=$1;}
-    | printf SEMICOLON {$$=$1;}
-    | scanf SEMICOLON {$$=$1;}
-    | struct_def {$$=$1;}
     ;
 if_else
     : IF bool_statment statement %prec LOWER_THEN_ELSE {
