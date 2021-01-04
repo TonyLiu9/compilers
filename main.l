@@ -50,7 +50,9 @@ else
     }
 }
 
-    
+ 
+}
+   
     int otoi(string s)
     {
         int ans=0;
@@ -65,7 +67,6 @@ else
             ans=ans*16+s[i]-'0';
         return ans;
     }
-}
 %}
 
 while   while
