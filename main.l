@@ -2,7 +2,6 @@
 %top{
 #include<common.h>
 #include "main.tab.hh"
-#include "tree.h"
 #include<fstream>
 #include<map>
 

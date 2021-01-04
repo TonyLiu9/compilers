@@ -1,9 +1,13 @@
 %{
     #include"common.h"
-    #include <bits/stdc++.h>
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
+    extern int lid;
+    extern vector struct_def  strdef;
+    bool forflag;
+    vector<tempvariate> tmpfor;
+    int forlevel = 0;
 %}
 %defines
 
@@ -16,22 +20,23 @@
 %token LPAREN RPAREN LBRASE RBRASE LBRACKET RBRACKET COMMA SEMICOLON
 %token TRUE FALSE
 %token ADD MINUS SUB DIV MOD SELFADD SELFMIN
-%token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%token ASSIGN ADDEQ MINEQ MULEQ DIVEQ MODEQ
 %token EQUAL NEQUAL BIGT SMT BTOE STOE NOT AND OR
 %token PRINTF SCANF
-%token DOT RETURN
+%token DOT
 
 %right OR
 %right AND
 %left EQUAL NEQUAL BIGT BTOE STOE SMT
 %left ADD MINUS
-%left MULTI DIV MOD
+%left SUB DIV MOD
 %right NOT
 %right SELFADD SELFMIN 
-%right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%right ASSIGN ADDEQ MINEQ MULEQ DIVEQ MODEQ
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
 %%
+
 program
     : statements {root=new TreeNode(NODE_PROG);root->addChild($1);}
     ;
