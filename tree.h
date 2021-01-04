@@ -13,11 +13,17 @@ enum NodeType{
     NODE_CONCHAR,
     NODE_CONSTR,
     NODE_FEXPR,
-    NODE_WEXPR,
     NODE_VAR,
     NODE_FUNC,
     NODE_ASSIGN,
     NODE_STRDEF
+};
+
+enum VarFlag
+{
+    VAR_COMMON,
+    VAR_ADDRESS,
+    VAR_POINTER
 };
 
 enum StmtType{
@@ -31,11 +37,26 @@ enum StmtType{
 };
 
 enum OpType{
-    OP_ADD, OP_MINUS, OP_MULTI, OP_DIV, OP_MOD,
-    OP_SADD, OP_SMIN, OP_NEG, OP_POS,
-    OP_NOT, OP_AND, OP_OR,
-    OP_EQ, OP_LT, OP_LE, OP_GT, OP_GE, OP_NE
+    OP_ADD,
+    OP_MINUS, 
+    OP_MULTI, 
+    OP_DIV, 
+    OP_MOD,
+    OP_SADD, 
+    OP_SMIN, 
+    OP_NEG, 
+    OP_POS,
+    OP_NOT, 
+    OP_AND, 
+    OP_OR,
+    OP_EQ, 
+    OP_LT, 
+    OP_LE, 
+    OP_GT, 
+    OP_GE,
+    OP_NE
 };
+
 
 enum VarType{
     VAR_VOID,
@@ -44,11 +65,7 @@ enum VarType{
     VAR_CHAR,
     VAR_STR
 };
-struct msym{
-    int snum;
-    char*  sym;
-};
-struct TreeNode {
+class TreeNode {
     TreeNode(int NodeType);
     int nodeID;
     NodeType nodeType;
@@ -73,13 +90,12 @@ struct TreeNode {
     int int_val;
     bool bool_val;
     string str_val;
-    StmtType stmtType;
-    OpType opType;
-    VarType varType;
+    int stmtType;
+    int opType;
+    int varType;
     string var_name;
-
+    int varFlag;
     TreeNode(NodeType type);
 
-};
 };
 #endif
