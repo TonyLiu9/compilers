@@ -66,6 +66,7 @@ enum VarType{
     VAR_STR
 };
 class TreeNode {
+public:
     TreeNode(int NodeType);
     int nodeID;
     NodeType nodeType;
@@ -76,8 +77,9 @@ class TreeNode {
     void addChild(TreeNode *);
     void addSibling(TreeNode *);
 
-    void genNodeId();//从根节点开始逐个赋Id 实现方式同学们可以自行修改
-
+    void getNodeId();//从根节点开始逐个赋Id 实现方式同学们可以自行修改
+    TreeNode* getChlid(int index);
+    int childnum();
     void printAST();//打印语法树结点
     /***
      * 以下的几个函数皆为在printAST过程中辅助输出使用
