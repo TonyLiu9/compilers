@@ -1,9 +1,8 @@
-#ifndef TREE_H
-#define TREE_H
-#include <bits/stdc++.h>
-
+#pragma once
+#include<bits/stdc++.h>
 using namespace std;
-enum NodeType{
+enum NodeType
+{
     NODE_PROG,
     NODE_STMT,
     NODE_OP,
@@ -18,16 +17,17 @@ enum NodeType{
     NODE_ASSIGN,
     NODE_STRDEF
 };
-
-enum VarFlag
+enum OPType
 {
-    VAR_COMMON,
-    VAR_ADDRESS,
-    VAR_POINTER
+    OP_ADD, OP_MINUS, OP_MULTI, OP_DIV, OP_MOD,
+    OP_SADD, OP_SMIN, OP_NEG,
+    OP_NOT, OP_AND, OP_OR,
+    OP_EQ, OP_LT, OP_LE, OP_BT, OP_BE, OP_NE
 };
-
-enum StmtType{
+enum STMTType
+{
     STMT_IF,
+    STMT_ELSE,
     STMT_WHILE,
     STMT_FOR,
     STMT_DECL,
@@ -35,74 +35,39 @@ enum StmtType{
     STMT_PRINTF,
     STMT_SCANF
 };
-
-enum OpType{
-    OP_ADD,
-    OP_MINUS, 
-    OP_MULTI, 
-    OP_DIV, 
-    OP_MOD,
-    OP_SADD, 
-    OP_SMIN, 
-    OP_NEG, 
-    OP_POS,
-    OP_NOT, 
-    OP_AND, 
-    OP_OR,
-    OP_EQ, 
-    OP_LT, 
-    OP_LE, 
-    OP_GT, 
-    OP_GE,
-    OP_NE
-};
-
-
-enum VarType{
+enum VarType
+{
     VAR_VOID,
-    VAR_BOOLEAN,
     VAR_INTEGER,
     VAR_CHAR,
-    VAR_STR
+    VAR_STRING,
 };
-class TreeNode {
+enum VarFlag
+{
+    VAR_COMMON,
+    VAR_ADDRESS,
+    VAR_POINTER
+};
+static int NodeIndex = 0;
+class TreeNode
+{
 public:
     TreeNode(int NodeType);
-    int nodeID;
-    NodeType nodeType;
+    void addChild(TreeNode *child);
+    void addSibling(TreeNode *sibling);
+    void getNodeId();
+    void printAST();
+    TreeNode* getChild(int index);
+    int childNum();
 
-    TreeNode *child = nullptr;
-    TreeNode *sibling = nullptr;
-
-    void addChild(TreeNode *);
-    void addSibling(TreeNode *);
-
-    void getNodeId();//从根节点开始逐个赋Id 实现方式同学们可以自行修改
-    TreeNode* getChlid(int index);
-    int childnum();
-    void printAST();//打印语法树结点
-    /***
-     * 以下的几个函数皆为在printAST过程中辅助输出使用
-     * 同学们可以根据需要自己使用其他方法
-    ***/
-    void printNodeInfo();
-    void printNodeConnection();
-    string nodeTypeInfo();
-
-    int int_val;
+    vector<TreeNode *> dim;
+    int nodeType, nodeIndex;
+    int opType, stmtType;
+    int varType, int_val, varFlag;
     bool bool_val;
     string str_val;
-    int stmtType;
-    int opType;
-    int varType;
-    string var_name;
-    int varFlag;
-    TreeNode(NodeType type);
+    string varName;
 private:
     vector<TreeNode *> CHILDREN;
     vector<TreeNode *> SIBLING;
-
 };
-
-
-#endif

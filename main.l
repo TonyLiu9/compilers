@@ -1,123 +1,106 @@
 %option noyywrap
-%top{
-#include<common.h>
-#include "main.tab.hh"
-#include<fstream>
-#include<map>
-
-#include<iomanip>
-#include<stdio.h>
-#include<string.h>
-#include <cstring>
-#include <stdlib.h>
-#include <iostream>
-using namespace std;
-}
 %{
-int chars=0,words=0,lines=0,numbers=0,mem=0,todo=0,count=0,i=0,jdgf=0,jdgb=0,jdgp=0,ckmc=0,csymj=0;
-char *remf,*sye[100],*ckm;
-char strings[100],sc[100][100],scc[100][100];
-
-msym b[256];
-void initm(msym* a)
-{
-    for(int i=0;i<256;i++){
-        a[i].sym=new char[15];
-        a[i].sym[0]='0';
-        a[i].sym[1]='\0';}
-}
-int symj(char* text,int l)
-{
-int sji=0;
-sJ:if(strcmp(b[sji].sym,"0")==0)
-{
-    strcpy(b[sji].sym,text);
-    csymj++;
-    return sji;
-}
-else
-{
-    if(strcmp(b[sji].sym,text)==0)
-    {
-        return sji;
-    }
-    else
-    {
-        sji=(++sji)%256;
-        goto sJ;
-    }
-}
-
- 
-}
-   
-   
+    #include"common.h"
+    #include"main.tab.hh"
+    int firstword = 0;
+    extern int lid;
+    
+    
 %}
 
-while   while
-int int
-if  if
-return  return
-lbrase  "{"
-rbrase  "}"
-lbracket    "["
-rbracket    "]"
-lparen  "("
-rparen  ")"
-smaller "<"
-bigger ">"
-semicolon   ;
-eq  ==
-assign  =
-number  [1-9][0-9]*|[0]
-word    [a-zA-Z][0-9a-zA-Z]*
-addword [\&][a-zA-Z][0-9a-zA-Z]*
-ptrofword   [\*][a-zA-Z][0-9a-zA-Z]*
+INTEGER 0|[1-9][0-9]*
 CHARACTER \'(.*)\'
 STRING \"(.*)\"
-add "+"
-minus   "-"
-sub "*"
-div "/"
-line    \n
-cb "//".*\n
-commentbegin "/*" 
-commentelement .|\n
-commentend "*/" 
-char    .
-%x COMMENT
-%%
-{return}    {return RETURN;}
-{lbrase}    {return LBRASE;}
-{rbrase}    {return RBRASE;}
-{lbracket}  {return LBRACKET;}
-{rbracket}  {return RBRACKET;}
-{lparen}    {return LPAREN;ckmc++;}
-{rparen}    {return RPAREN;ckmc++;}
-{eq}    {return EQUAL;}
-{smaller}   {return SMT;}
-{bigger}    {return BIGT;}
-">=" return BTOE;
-"<=" return STOE;
-{number}    {
-         numbers++;chars+=strlen(yytext);
+ID [[:alpha:]_][[:alpha:][:digit:]_]*
+IDadd \&[[:alpha:]_][[:alpha:][:digit:]_]*
+IDptr \*[[:alpha:]_][[:alpha:][:digit:]_]*
 
+EOL (\r\n|\n)
+WHITE [\t ]
+
+commentbegin "/*"
+commentspace [ \t]
+commentelement [^ \t\n]
+commentnextline \n
+commentend "*/"
+ALTERcomment "//"
+%x LONGCOMMENT
+%x SHORTCOMMENT
+
+%%
+
+"true" {
+    TreeNode *node = new TreeNode(NODE_BOOL);
+    node->bool_val = true;
+    yylval = node;
+    return TRUE;
+}
+"false" {
+    TreeNode *node = new TreeNode(NODE_BOOL);
+    node->bool_val = false;
+    yylval = node;
+    return FALSE;
+}
+
+"int" return INT;
+"void" return VOID;
+"char" return CHAR;
+
+"for" return FOR;
+"if" return IF;
+"while" return WHILE;
+"else" return ELSE;
+"struct" return STRUCT;
+
+"printf" return PRINTF;
+"scanf" return SCANF;
+
+"const" return CONST;
+
+"." return dot;
+"=" return ASSIGN;
+"+=" return ADDASS;
+"-=" return MINASS;
+"*=" return MULASS;
+"/=" return DIVASS;
+"%=" return MODASS;
+
+"++" return SELFADD;
+"--" return SELFMIN;
+"+" return ADD;
+"-" return MINUS;
+"*" return MULTI;
+"/" return DIV;
+"%" return MOD;
+
+"!" return NOT;
+"&&" return AND;
+"||" return OR;
+"==" return EQUAL;
+"!=" return NEQUAL;
+">" return BT;
+">=" return BE;
+"<" return LT;
+"<=" return LE;
+
+"," return COMMA;
+";" return SEMICOLON;
+"(" return LPAREN;
+")" return RPAREN;
+"[" return LBRACK;
+"]" return RBRACK;
+"{" {
+    //layers.push_back(layer(curlayer, lid++));
+    return LBRACE;
+}
+"}" return RBRACE;
+
+{INTEGER} {
     TreeNode *node = new TreeNode(NODE_CONINT);
     node->int_val = atoi(yytext);
     yylval = node;
-         return NUMBER;
-         /*if(todo==0)
-        mem=int(*yytext)-48;
-         else if(todo==1)
-         mem=mem+int(*yytext)-48;
-         else if(todo==2)
-         mem=mem-int(*yytext)+48;
-         else if(todo==3)
-         mem=mem*(int(*yytext)-48);
-         else if(todo==4)
-         mem=mem/(int(*yytext)-48);
-         todo=0;*/
-        }
+    return INTEGER;
+}
 
 {CHARACTER} {
     TreeNode *node = new TreeNode(NODE_CONCHAR);
@@ -134,62 +117,41 @@ char    .
     yylval = node;
     return STRING;
 }
-{assign}    {return ASSIGN;}
-{while} {return WHILE;}
-{semicolon} {return SEMICOLON;ckmc=5;}
-{int}   {ckmc=1;return INT;}
-"void"  {ckmc=1;return VOID;}
-"struct"{return STRUCT;}
-"else" return ELSE;
-"printf" return PRINTF;
-"scanf" return SCANF;
-
-"const" return CONST;
-
-"." return DOT;
-{if}    {return IF;}
-{commentbegin} {BEGIN COMMENT;}
-{cb} {}
-<COMMENT>{commentelement}   {}
-<COMMENT>{commentend}   {BEGIN INITIAL;}
-{line}  {lines++;}
-{div}   {return DIV;todo=4;}
-{sub}   {return SUB;todo=3;}
-{minus} {return MINUS;todo=2;}
-{add}   {return ADD;todo=1;}
-"++" return SELFADD;
-"--" return SELFMIN;
-"+=" return ADDEQ;
-"-=" return MINEQ;
-"/=" return DIVEQ;
-"*=" return SUBEQ;
-"%=" return MODEQ;
-"!=" return NEQUAL;
-"%" return MOD;
-"!" return NOT;
-"&&" return AND;
-"||" return OR;
-"," return COMMA;
-{word}  { words++;
+{ID} {
     TreeNode *node = new TreeNode(NODE_VAR);
     node->varName = string(yytext);
     yylval = node;
-    return WORD;}
-{addword}   { words++;
+    return ID;
+}
+{IDadd} {
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
     node->varName = str;
     node->varFlag = VAR_ADDRESS;
     yylval = node;
-    return WORD;}
-{ptrofword} { words++;
+    return ID;
+}
+{IDptr} {
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
     node->varName = str;
     node->varFlag = VAR_POINTER;
     yylval = node;
-    return WORD;}
-{char}  {chars++;}
+    return ID;
+}
+{EOL}
+{WHITE}
+
+{commentbegin} { BEGIN LONGCOMMENT;  }
+<LONGCOMMENT>{commentelement} {  }
+<LONGCOMMENT>{commentspace} {  }
+<LONGCOMMENT>{commentnextline} { }
+<LONGCOMMENT>{commentend} {BEGIN INITIAL; }
+
+{ALTERcomment} { BEGIN SHORTCOMMENT; }
+<SHORTCOMMENT>{commentelement} {}
+<SHORTCOMMENT>{commentspace} { }
+<SHORTCOMMENT>{commentnextline} { BEGIN INITIAL; }
 %%

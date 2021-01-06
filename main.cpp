@@ -1,14 +1,15 @@
-#include "main.tab.hh"
-#include "common.h"
-#include <bits/stdc++.h>
+#include"main.tab.hh"
+#include"common.h"
+#include<bits/stdc++.h>
 using namespace std;
 TreeNode *root=nullptr;
 int main ()
 {
+    printf("@");
     yyparse();
-    if(root){//若存在语法树结点
-        root->genNodeId();//将整棵语法树赋予id
-        root->printAST();//打印相关信息
+    if(root){
+        root->getNodeId();
+        root->printAST();
     }
 }
 int yyerror(char const* message)

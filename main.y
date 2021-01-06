@@ -3,39 +3,37 @@
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
-    extern vector d_struct  strdef;
     bool forflag;
-    vector<tempvariate> tmpfor;
+    vector<tmpvariate> tmpfor;
     int forlevel = 0;
 %}
 %defines
 
 %start program
-%token RETURN
-%token WORD NUMBER CHARACTER STRING WORDARR WORDPTR
+
+%token ID IDadd IDptr INTEGER CHARACTER STRING
 %token IF ELSE WHILE FOR STRUCT
 %token CONST
-%token INT VOWORD CHAR 
-%token LPAREN RPAREN LBRASE RBRASE LBRACKET RBRACKET COMMA SEMICOLON
+%token INT VOID CHAR 
+%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE COMMA SEMICOLON
 %token TRUE FALSE
-%token ADD MINUS SUB DIV MOD SELFADD SELFMIN
-%token ASSIGN ADDEQ MINEQ MULEQ DIVEQ MODEQ
-%token EQUAL NEQUAL BIGT SMT BTOE STOE NOT AND OR
+%token ADD MINUS MULTI DIV MOD SELFADD SELFMIN 
+%token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
+%token EQUAL NEQUAL BT BE LT LE NOT AND OR
 %token PRINTF SCANF
-%token DOT
+%token dot
 
 %right OR
 %right AND
-%left EQUAL NEQUAL BIGT BTOE STOE SMT
+%left EQUAL NEQUAL BT BE LT LE
 %left ADD MINUS
-%left SUB DIV MOD
+%left MULTI DIV MOD
 %right NOT
 %right SELFADD SELFMIN 
-%right ASSIGN ADDEQ MINEQ MULEQ DIVEQ MODEQ
+%right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE 
 %%
-
 program
     : statements {root=new TreeNode(NODE_PROG);root->addChild($1);}
     ;
@@ -52,10 +50,10 @@ statement
     | def_func {$$=$1;}
     | printf SEMICOLON {$$=$1;}
     | scanf SEMICOLON {$$=$1;}
-    | d_struct {$$=$1;}
+    | struct_def {$$=$1;}
     ;
-d_struct
-    : STRUCT WORD LBRACE struct_ins RBRACE args SEMICOLON
+struct_def
+    : STRUCT ID LBRACE struct_ins RBRACE args SEMICOLON
     {
         TreeNode* node = new TreeNode(NODE_STRDEF);
         node->addChild($2);
@@ -64,7 +62,7 @@ d_struct
         node->addChild($6);
         $$=node;
     }
-    | STRUCT WORD LBRACE struct_ins RBRACE SEMICOLON
+    | STRUCT ID LBRACE struct_ins RBRACE SEMICOLON
     {
         TreeNode* node = new TreeNode(NODE_STRDEF);
         node->addChild($2);
@@ -77,54 +75,54 @@ struct_ins
     | struct_ins instruction {$$=$1;$$->addSibling($2);}
     ;
 ass
-    : WORDS ASSIGN expr{
+    : IDS ASSIGN expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS ADDASS expr{
+    | IDS ADDASS expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_ADD;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS MINASS expr{
+    | IDS MINASS expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_MINUS;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS MULASS expr{
+    | IDS MULASS expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_MULTI;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS DIVASS expr{
+    | IDS DIVASS expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_DIV;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS MODASS expr{
+    | IDS MODASS expr{
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_MOD;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | WORDS SELFADD {
+    | IDS SELFADD {
         TreeNode *node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_SADD;
         node->addChild($1);
         $$=node; 
     }
-    | WORDS SELFMIN {
+    | IDS SELFMIN {
         TreeNode *node=new TreeNode(NODE_ASSIGN);
         node->opType=OP_SMIN;
         node->addChild($1);
@@ -132,21 +130,21 @@ ass
     }
     ;
 args
-    : WORDS {$$=$1;}
+    : IDS {$$=$1;}
     | ass {$$=$1;}
-    | args COMMA WORDS {$$=$1; $$->addSibling($3);}
+    | args COMMA IDS {$$=$1; $$->addSibling($3);}
     | args COMMA ass {$$=$1; $$->addSibling($3);}
     ;
 call_args
-    : WORDS {$$=$1;}
-    | WORDadd {$$=$1;}
-    | WORDptr {$$=$1;}
-    | call_args COMMA WORDS {$$=$1; $$->addSibling($3);}
-    | call_args COMMA WORDadd {$$=$1; $$->addSibling($3);}
-    | call_args COMMA WORDptr {$$=$1; $$->addSibling($3);}
+    : IDS {$$=$1;}
+    | IDadd {$$=$1;}
+    | IDptr {$$=$1;}
+    | call_args COMMA IDS {$$=$1; $$->addSibling($3);}
+    | call_args COMMA IDadd {$$=$1; $$->addSibling($3);}
+    | call_args COMMA IDptr {$$=$1; $$->addSibling($3);}
     ;
 def_func
-    : type WORD LPAREN call_args RPAREN statement {
+    : type ID LPAREN call_args RPAREN statement {
         TreeNode *node=new TreeNode(NODE_FUNC);
         node->addChild($1);
         node->addChild($2);
@@ -154,7 +152,7 @@ def_func
         node->addChild($6);
         $$=node;
     }
-    | type WORD LPAREN RPAREN statement {
+    | type ID LPAREN RPAREN statement {
         TreeNode *node=new TreeNode(NODE_FUNC);
         node->addChild($1);
         node->addChild($2);
@@ -279,7 +277,7 @@ printf
         node->addChild($3);
         $$=node;
     }
-    | PRINTF LPAREN WORD RPAREN{                      
+    | PRINTF LPAREN ID RPAREN{                      
         TreeNode *node=new TreeNode(NODE_STMT);
         node->stmtType=STMT_PRINTF;
         node->addChild($3);
@@ -312,28 +310,28 @@ bool_expr
         node->addChild($3);
         $$=node;
     }
-    | expr BIGT expr {
+    | expr BT expr {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_BT;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | expr BTOE expr {
+    | expr BE expr {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_BE;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | expr SMT expr {
+    | expr LT expr {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_LT;
         node->addChild($1);
         node->addChild($3);
         $$=node;
     }
-    | expr STOE expr {
+    | expr LE expr {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_LE;
         node->addChild($1);
@@ -362,7 +360,7 @@ bool_expr
     }
     ;
 expr
-    : WORDS {$$=$1;}
+    : IDS {$$=$1;}
     | INTEGER {$$=$1;}
     | CHARACTER {$$=$1;}
     | STRING {$$=$1;}
@@ -414,9 +412,9 @@ type
         node->varType=VAR_INTEGER;
         $$=node; 
     }
-    | VOWORD {
+    | VOID {
         TreeNode *node=new TreeNode(NODE_TYPE);
-        node->varType=VAR_VOWORD;
+        node->varType=VAR_VOID;
         $$=node;         
     }
     | CHAR {
@@ -425,44 +423,44 @@ type
         $$=node;
     }
     ;
-WORDARR
-    : WORD LBRACK expr RBRACK {
+IDARR
+    : ID LBRACK expr RBRACK {
         $$=$1;
         $$->dim.push_back($3);
     }
-    | WORDARR LBRACK expr RBRACK {
+    | IDARR LBRACK expr RBRACK {
         $$=$1;
         $$->dim.push_back($3);
     }
     ;
-WORDcld
-    : WORD dot WORD {
+IDcld
+    : ID dot ID {
         $$=$1;
         $$->addChild($3);
     }
-    | WORDARR dot WORD {
+    | IDARR dot ID {
         $$=$1;
         $$->addChild($3);
     }
-    | WORD dot WORDARR {
+    | ID dot IDARR {
         $$=$1;
         $$->addChild($3);
     }
-    | WORDARR dot WORDARR {
+    | IDARR dot IDARR {
         $$=$1;
         $$->addChild($3);
     }
-    | WORDcld dot WORD {
+    | IDcld dot ID {
         $$=$1;
         $$->addChild($3);
     }
-    | WORDcld dot WORDARR {
+    | IDcld dot IDARR {
         $$=$1;
         $$->addChild($3);
     }
     ;
-WORDS 
-    : WORD {$$=$1;}
-    | WORDARR {$$=$1;}
-    | WORDcld {$$=$1;}
+IDS 
+    : ID {$$=$1;}
+    | IDARR {$$=$1;}
+    | IDcld {$$=$1;}
 %%
