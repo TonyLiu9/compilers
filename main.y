@@ -94,7 +94,7 @@ ass
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(2);
         }
         $$=node;
     }
@@ -106,7 +106,7 @@ ass
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(3);
         }
         $$=node;
     }
@@ -118,7 +118,7 @@ ass
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(4);
         }
         $$=node;
     }
@@ -130,7 +130,7 @@ ass
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(5);
         }
         $$=node;
     }
@@ -142,7 +142,7 @@ ass
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(6);
         }
         $$=node;
     }
@@ -402,7 +402,7 @@ expr
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(7);
         }
         $$=node;   
     }
@@ -414,7 +414,7 @@ expr
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(8);
         }
         $$=node;   
     }
@@ -426,7 +426,7 @@ expr
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(9);
         }
         $$=node;   
     }
@@ -438,7 +438,7 @@ expr
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(10);
         }
         $$=node;   
     }
@@ -450,7 +450,7 @@ expr
         if($1->varType!=-1&&$1->varType != $3->varType)
         {
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(11);
         }
         $$=node;   
     }
@@ -458,10 +458,10 @@ expr
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_NEG;
         node->addChild($2);
-        if($2->varType != VAR_INTEGER)
+        if($2->varType!=-1&&$2->varType != VAR_INTEGER)
         { 
         std::cout<<"Type Error!"<<std::endl;
-        exit(1);
+        exit(12);
         }
         $$=node; 
     }
