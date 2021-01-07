@@ -79,6 +79,11 @@ ass
         TreeNode* node=new TreeNode(NODE_ASSIGN);
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS ADDASS expr{
@@ -86,6 +91,11 @@ ass
         node->opType=OP_ADD;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS MINASS expr{
@@ -93,6 +103,11 @@ ass
         node->opType=OP_MINUS;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS MULASS expr{
@@ -100,6 +115,11 @@ ass
         node->opType=OP_MULTI;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS DIVASS expr{
@@ -107,6 +127,11 @@ ass
         node->opType=OP_DIV;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS MODASS expr{
@@ -114,6 +139,11 @@ ass
         node->opType=OP_MOD;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;
     }
     | IDS SELFADD {
@@ -369,6 +399,11 @@ expr
         node->opType=OP_ADD;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;   
     }
     | expr MINUS expr {
@@ -376,6 +411,11 @@ expr
         node->opType=OP_MINUS;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;   
     }
     | expr MULTI expr {
@@ -383,6 +423,11 @@ expr
         node->opType=OP_MULTI;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;   
     }
     | expr DIV expr {
@@ -390,6 +435,11 @@ expr
         node->opType=OP_DIV;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;   
     }
     | expr MOD expr {
@@ -397,12 +447,22 @@ expr
         node->opType=OP_MOD;
         node->addChild($1);
         node->addChild($3);
+        if($1->varType!=-1&&$1->varType != $3->varType)
+        {
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node;   
     }
     | MINUS expr %prec NEG {
         TreeNode *node=new TreeNode(NODE_OP);
         node->opType=OP_NEG;
         node->addChild($2);
+        if($2->varType != VAR_INTEGER)
+        { 
+        std::cout<<"Type Error!"<<std::endl;
+        exit(1);
+        }
         $$=node; 
     }
     ;
