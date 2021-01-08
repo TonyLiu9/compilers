@@ -1,5 +1,6 @@
 %{
     #include"common.h"
+    #include<bits/stdc++.h>
     extern TreeNode * root;
     int yylex();
     int yyerror( char const * );
@@ -14,7 +15,7 @@
 %token ID IDadd IDptr INTEGER CHARACTER STRING
 %token IF ELSE WHILE FOR STRUCT
 %token CONST
-%token INT VOID CHAR 
+%token INT VOID CHAR STR
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE COMMA SEMICOLON
 %token TRUE FALSE
 %token ADD MINUS MULTI DIV MOD SELFADD SELFMIN 

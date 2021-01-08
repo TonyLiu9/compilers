@@ -3,7 +3,6 @@
     #include"common.h"
     #include"main.tab.hh"
     int firstword = 0;
-    extern int lid;
     extern vector<variate> type_check;
     
     
@@ -47,6 +46,7 @@ ALTERcomment "//"
 "void" return VOID;
 "char" return CHAR;
 
+"string" return STR;
 "for" return FOR;
 "if" return IF;
 "while" return WHILE;
@@ -90,11 +90,13 @@ ALTERcomment "//"
 ")" return RPAREN;
 "[" return LBRACK;
 "]" return RBRACK;
-"{" {
-    //layers.push_back(layer(curlayer, lid++));
-    return LBRACE;
-}
+"{" return LBRACE;
 "}" return RBRACE;
+
+
+
+
+
 
 {INTEGER} {
     TreeNode *node = new TreeNode(NODE_CONINT);
@@ -121,6 +123,7 @@ ALTERcomment "//"
     yylval = node;
     return STRING;
 }
+
 {ID} {
     TreeNode *node = new TreeNode(NODE_VAR);
     node->varName = string(yytext);
