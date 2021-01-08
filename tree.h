@@ -73,7 +73,7 @@ public:
     TreeNode* getChild(int index);
     int childNum();
 
-    vector<TreeNode *> dim;
+    vector<int> dim;
     int nodeType, nodeIndex;
     int opType, stmtType;
     int varType, int_val, varFlag;
