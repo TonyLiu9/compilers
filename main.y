@@ -72,7 +72,7 @@ struct_def
         node->addChild($4);
         $$=node;
     }
-    ;
+    ; 
 struct_ins
     : instruction {$$=$1;}
     | struct_ins instruction {$$=$1;$$->addSibling($2);}
