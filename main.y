@@ -483,6 +483,11 @@ type
         node->varType=VAR_CHAR;
         $$=node;
     }
+    | STR {
+        TreeNode *node=new TreeNode(NODE_TYPE);
+        node->varType=VAR_STRING;
+        $$=node;
+    }
     ;
 IDARR
     : ID LBRACK expr RBRACK {
