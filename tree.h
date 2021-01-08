@@ -19,10 +19,23 @@ enum NodeType
 };
 enum OPType
 {
-    OP_ADD, OP_MINUS, OP_MULTI, OP_DIV, OP_MOD,
-    OP_SADD, OP_SMIN, OP_NEG,
-    OP_NOT, OP_AND, OP_OR,
-    OP_EQ, OP_LT, OP_LE, OP_BT, OP_BE, OP_NE
+    OP_ADD, 
+    OP_MINUS, 
+    OP_MULTI, 
+    OP_DIV, 
+    OP_MOD,
+    OP_SADD, 
+    OP_SMIN, 
+    OP_NEG,
+    OP_NOT, 
+    OP_AND, 
+    OP_OR,
+    OP_EQ, 
+    OP_LT, 
+    OP_LE, 
+    OP_BT, 
+    OP_BE, 
+    OP_NE
 };
 enum STMTType
 {
