@@ -6,6 +6,7 @@
     int yyerror( char const * );
     bool forflag;
     vector<tmpvariate> tmpfor;
+    extern vector<variate> type_check;
     int forlevel = 0;
 %}
 %defines
@@ -13,14 +14,14 @@
 %start program
 
 %token ID IDadd IDptr INTEGER CHARACTER STRING
-%token IF ELSE WHILE FOR STRUCT
+%token IF ELSE WHILE FOR STRUCT RETURN
 %token CONST
 %token INT VOID CHAR STR
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE COMMA SEMICOLON
 %token TRUE FALSE
 %token ADD MINUS MULTI DIV MOD SELFADD SELFMIN 
 %token ASSIGN ADDASS MINASS MULASS DIVASS MODASS
-%token EQUAL NEQUAL BT BE LT LE NOT AND OR
+%token EQUAL NEQUAL BT BE LT LE NOT AND OR NEG
 %token PRINTF SCANF
 %token dot
 
@@ -30,6 +31,7 @@
 %left ADD MINUS
 %left MULTI DIV MOD
 %right NOT
+%right NEG
 %right SELFADD SELFMIN 
 %right ASSIGN ADDASS MINASS MULASS DIVASS MODASS
 %nonassoc LOWER_THEN_ELSE

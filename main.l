@@ -52,7 +52,7 @@ ALTERcomment "//"
 "while" return WHILE;
 "else" return ELSE;
 "struct" return STRUCT;
-
+"return" return RETURN;
 "printf" return PRINTF;
 "scanf" return SCANF;
 
