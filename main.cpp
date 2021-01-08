@@ -2,6 +2,7 @@
 #include"common.h"
 #include<bits/stdc++.h>
 using namespace std;
+vector<variate> type_check;
 TreeNode *root=nullptr;
 int main ()
 {

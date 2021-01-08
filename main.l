@@ -4,6 +4,7 @@
     #include"main.tab.hh"
     int firstword = 0;
     extern int lid;
+    extern vector<variate> type_check;
     
     
 %}
@@ -116,13 +117,23 @@ ALTERcomment "//"
     str.erase(0,str.find_first_not_of("\""));
     str.erase(str.find_last_not_of("\"") + 1);
     node->str_val = str;
-    node->varType = VAR_STR;
+    node->varType = VAR_STRING;
     yylval = node;
     return STRING;
 }
 {ID} {
     TreeNode *node = new TreeNode(NODE_VAR);
     node->varName = string(yytext);
+    vector<variate>::reverse_iterator it = type_check.rbegin();
+    while(it != type_check.rend())
+    {
+        if((*it).name == node->varName)
+        {
+            node->varType = (*it).type;
+            break;
+        }
+        it++;
+    }
     yylval = node;
     return ID;
 }
@@ -132,6 +143,16 @@ ALTERcomment "//"
     str.erase(str.begin());
     node->varName = str;
     node->varFlag = VAR_ADDRESS;
+    vector<variate>::reverse_iterator it = type_check.rbegin();
+    while(it != type_check.rend())
+    {
+        if((*it).name == node->varName)
+        {
+            node->varType = (*it).type;
+            break;
+        }
+        it++;
+    }
     yylval = node;
     return ID;
 }
@@ -141,6 +162,16 @@ ALTERcomment "//"
     str.erase(str.begin());
     node->varName = str;
     node->varFlag = VAR_POINTER;
+    vector<variate>::reverse_iterator it = type_check.rbegin();
+    while(it != type_check.rend())
+    {
+        if((*it).name == node->varName)
+        {
+            node->varType = (*it).type;
+            break;
+        }
+        it++;
+    }
     yylval = node;
     return ID;
 }
