@@ -11,9 +11,9 @@
 INTEGER 0|[1-9][0-9]*
 CHARACTER \'(.*)\'
 STRING \"(.*)\"
-ID [[:alpha:]_][[:alpha:][:digit:]_]*
-IDadd \&[[:alpha:]_][[:alpha:][:digit:]_]*
-IDptr \*[[:alpha:]_][[:alpha:][:digit:]_]*
+ID [a-zA-Z][0-9a-zA-Z]*
+IDadd \&[a-zA-Z][0-9a-zA-Z]*
+IDptr \*[a-zA-Z][0-9a-zA-Z]*
 
 EOL (\r\n|\n)
 WHITE [\t ]
