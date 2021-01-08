@@ -97,6 +97,7 @@ ALTERcomment "//"
 
 {INTEGER} {
     TreeNode *node = new TreeNode(NODE_CONINT);
+    node->varType = VAR_INTEGER;
     node->int_val = atoi(yytext);
     yylval = node;
     return INTEGER;
@@ -105,6 +106,7 @@ ALTERcomment "//"
 {CHARACTER} {
     TreeNode *node = new TreeNode(NODE_CONCHAR);
     node->int_val = int(string(yytext)[1]);
+    node->varType = VAR_CHAR;
     yylval = node;
     return CHARACTER;
 }
@@ -114,6 +116,7 @@ ALTERcomment "//"
     str.erase(0,str.find_first_not_of("\""));
     str.erase(str.find_last_not_of("\"") + 1);
     node->str_val = str;
+    node->varType = VAR_STR;
     yylval = node;
     return STRING;
 }
