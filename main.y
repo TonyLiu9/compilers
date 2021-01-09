@@ -99,6 +99,10 @@ ass
         std::cout<<"Type Error!"<<std::endl;
         exit(2);
         }
+        /* 
+        func_code.addCode("\tpopl\t%ebx\n");
+            func_code.addCode("\taddl\t%ebx,-"+to_string(4*$1->int_val)+"(%ebp)\n");
+        */
         $$=node;
     }
     | IDS MINASS expr{
