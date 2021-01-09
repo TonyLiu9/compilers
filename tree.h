@@ -1,6 +1,5 @@
 #pragma once
-#include<vector>
-#include<string>
+#include<bits/stdc++.h>
 using namespace std;
 enum NodeType
 {
@@ -13,7 +12,6 @@ enum NodeType
     NODE_CONCHAR,
     NODE_CONSTR,
     NODE_FEXPR,
-    NODE_WEXPR,
     NODE_VAR,
     NODE_FUNC,
     NODE_ASSIGN,
@@ -28,21 +26,21 @@ enum OPType
     OP_MOD,
     OP_SADD, 
     OP_SMIN, 
-    OP_NEG, 
-    OP_POS,
+    OP_NEG,
     OP_NOT, 
     OP_AND, 
     OP_OR,
     OP_EQ, 
     OP_LT, 
     OP_LE, 
-    OP_GT, 
-    OP_GE, 
+    OP_BT, 
+    OP_BE, 
     OP_NE
 };
 enum STMTType
 {
     STMT_IF,
+    STMT_ELSE,
     STMT_WHILE,
     STMT_FOR,
     STMT_DECL,
@@ -53,11 +51,9 @@ enum STMTType
 enum VarType
 {
     VAR_VOID,
-    VAR_BOOLEAN,
-    VAR_IR,
     VAR_INTEGER,
     VAR_CHAR,
-    VAR_STR
+    VAR_STRING,
 };
 enum VarFlag
 {
@@ -70,21 +66,21 @@ class TreeNode
 {
 public:
     TreeNode(int NodeType);
-    void addChild(TreeNode *child);     
-    void addSibling(TreeNode *sibling); 
-    void getNodeID();                   
-    void printAST();                                    
-    TreeNode *getChild(int index);      
-    int childNum();                     
-    vector<int> dim; 
-    int nodeType, nodeIndex;            
+    void addChild(TreeNode *child);
+    void addSibling(TreeNode *sibling);
+    void getNodeId();
+    void printAST();
+    TreeNode* getChild(int index);
+    int childNum();
+
+    vector<int> dim;
+    int nodeType, nodeIndex;
     int opType, stmtType;
     int varType, int_val, varFlag;
     bool bool_val;
-    vector<string> code;
     string str_val;
-    string varName;                     
+    string varName;
 private:
-    vector<TreeNode *> CHILDREN;        
-    vector<TreeNode *> SIBLING;         
+    vector<TreeNode *> CHILDREN;
+    vector<TreeNode *> SIBLING;
 };

@@ -8,10 +8,11 @@ main: lex.yy.cc main.tab.cc
 	g++ $(shell ls *.cpp *.cc) -o main.out
 run: main
 	./main.out
-test:
-	./main.out <test/test.c >test/test.s
-	gcc test/test.s -m32 -o test/test.out
-	qemu-i386 test/test.out
+test:main
+	for file in $(basename $(shell find test/*.c)); \
+	do \
+		./main.out <$$file.c >$$file.res; \
+	done
 testall:main
 	for file in $(basename $(shell find test/*.c)); \
 	do \
@@ -54,4 +55,4 @@ test3:main
 	./main.out <test/3.c >test/3.res
 	rm -f *.output *.yy.* *.tab.* *.out
 clean:
-	rm -f *.output *.yy.* *.tab.* *.out test/*.res test/*.s
+	rm -f *.output *.yy.* *.tab.* *.out test/*.res

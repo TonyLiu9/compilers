@@ -3,31 +3,29 @@
     #include"common.h"
     #include"main.tab.hh"
     int firstword = 0;
-    extern vector<scope> scopes;//作用域向量
-    extern vector<variate> type_check;//当前作用域的变量表
+    extern vector<variate> type_check;
     
-    extern int scopeid;
     
 %}
 
 INTEGER 0|[1-9][0-9]*
 CHARACTER \'(.*)\'
 STRING \"(.*)\"
-ID [[:alpha:]_][[:alpha:][:digit:]_]*
-andID \&[[:alpha:]_][[:alpha:][:digit:]_]*
-starID \*[[:alpha:]_][[:alpha:][:digit:]_]*
+ID [a-zA-Z][0-9a-zA-Z]*
+IDadd \&[a-zA-Z][0-9a-zA-Z]*
+IDptr \*[a-zA-Z][0-9a-zA-Z]*
 
 EOL (\r\n|\n)
 WHITE [\t ]
 
-commentblock "/*"
+commentbegin "/*"
 commentspace [ \t]
 commentelement [^ \t\n]
 commentnextline \n
 commentend "*/"
-commentline "//"
-%x CBLOCK
-%x CLINE
+ALTERcomment "//"
+%x LONGCOMMENT
+%x SHORTCOMMENT
 
 %%
 
@@ -47,14 +45,14 @@ commentline "//"
 "int" return INT;
 "void" return VOID;
 "char" return CHAR;
+
 "string" return STR;
- 
 "for" return FOR;
 "if" return IF;
 "while" return WHILE;
 "else" return ELSE;
+"struct" return STRUCT;
 "return" return RETURN;
-
 "printf" return PRINTF;
 "scanf" return SCANF;
 
@@ -62,17 +60,17 @@ commentline "//"
 
 "." return dot;
 "=" return ASSIGN;
-"+=" return ADE;
-"-=" return SUE;
-"*=" return MUE;
-"/=" return DIE;
-"%=" return MOE;
+"+=" return ADDASS;
+"-=" return MINASS;
+"*=" return MULASS;
+"/=" return DIVASS;
+"%=" return MODASS;
 
-"++" return ADO;
-"--" return SUO;
+"++" return SELFADD;
+"--" return SELFMIN;
 "+" return ADD;
-"-" return SUB;
-"*" return MUL;
+"-" return MINUS;
+"*" return MULTI;
 "/" return DIV;
 "%" return MOD;
 
@@ -81,27 +79,29 @@ commentline "//"
 "||" return OR;
 "==" return EQUAL;
 "!=" return NEQUAL;
-">" return GT;
-">=" return GE;
+">" return BT;
+">=" return BE;
 "<" return LT;
 "<=" return LE;
 
 "," return COMMA;
 ";" return SEMICOLON;
-"(" return SLB;
-")" return SRB;
-"[" return MLB;
-"]" return MRB;
-"{" {
-    scopes.emplace_back(scope(type_check, scopeid++));
-    return LLB;
-}
-"}" return LRB;
+"(" return LPAREN;
+")" return RPAREN;
+"[" return LBRACK;
+"]" return RBRACK;
+"{" return LBRACE;
+"}" return RBRACE;
+
+
+
+
+
 
 {INTEGER} {
     TreeNode *node = new TreeNode(NODE_CONINT);
-    node->int_val = atoi(yytext);
     node->varType = VAR_INTEGER;
+    node->int_val = atoi(yytext);
     yylval = node;
     return INTEGER;
 }
@@ -119,7 +119,7 @@ commentline "//"
     str.erase(0,str.find_first_not_of("\""));
     str.erase(str.find_last_not_of("\"") + 1);
     node->str_val = str;
-    node->varType = VAR_STR;
+    node->varType = VAR_STRING;
     yylval = node;
     return STRING;
 }
@@ -140,7 +140,7 @@ commentline "//"
     yylval = node;
     return ID;
 }
-{andID} {
+{IDadd} {
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
@@ -159,7 +159,7 @@ commentline "//"
     yylval = node;
     return ID;
 }
-{starID} {
+{IDptr} {
     TreeNode *node = new TreeNode(NODE_VAR);
     string str = string(yytext);
     str.erase(str.begin());
@@ -181,14 +181,14 @@ commentline "//"
 {EOL}
 {WHITE}
 
-{commentblock} { BEGIN CBLOCK; }
-<CBLOCK>{commentelement} { }
-<CBLOCK>{commentspace} {  }
-<CBLOCK>{commentnextline} { }
-<CBLOCK>{commentend} { BEGIN INITIAL; }
+{commentbegin} { BEGIN LONGCOMMENT;  }
+<LONGCOMMENT>{commentelement} {  }
+<LONGCOMMENT>{commentspace} {  }
+<LONGCOMMENT>{commentnextline} { }
+<LONGCOMMENT>{commentend} {BEGIN INITIAL; }
 
-{commentline} { BEGIN CLINE; }
-<CLINE>{commentelement} { }
-<CLINE>{commentspace} {  }
-<CLINE>{commentnextline} { BEGIN INITIAL; }
+{ALTERcomment} { BEGIN SHORTCOMMENT; }
+<SHORTCOMMENT>{commentelement} {}
+<SHORTCOMMENT>{commentspace} { }
+<SHORTCOMMENT>{commentnextline} { BEGIN INITIAL; }
 %%
