@@ -1,8 +1,6 @@
 test/*.res
-/*.cpp
 /*.cc
 /*.hh
-/*.h
 /*.out
 /*.output
 !main.cpp
