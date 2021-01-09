@@ -1,11 +1,8 @@
-#pragma once
 #ifndef COMMON_H
 #define COMMON_H
 
 #include "variatetable.h"
-#include "tree.h"
-#include "asm.h"
-#include <stack>
+#include "struct.h"
 #define YYSTYPE TreeNode *
 
-#endif 
+#endif
