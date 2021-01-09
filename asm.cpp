@@ -1,4 +1,12 @@
 #include"asm.h"
+void roda_part::emplace_back(string str)
+{
+    ro_data.emplace_back(str);
+}
+int roda_part::size()
+{
+    return ro_data.size();
+}
 void roda_part::output()
 {
     {
