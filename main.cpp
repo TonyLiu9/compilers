@@ -1,15 +1,19 @@
 #include"main.tab.hh"
 #include"common.h"
-#include<bits/stdc++.h>
-using namespace std;
-vector<variate> type_check;
+#include<iostream>
+using std::cout;
+using std::endl;
 TreeNode *root=nullptr;
+vector<scope> scopes;
+vector<variate> type_check;
+roda_part ro_data;
+func_part func_code(-1, "");
+int scopeid = 0;
 int main ()
 {
-    printf("@");
     yyparse();
     if(root){
-        root->getNodeId();
+        root->getNodeID();
         root->printAST();
     }
 }
